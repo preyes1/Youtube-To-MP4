@@ -1,15 +1,23 @@
 import tkinter
+from tkinter import filedialog
 import customtkinter #makes UI nicer
 from pytube import YouTube
 from PIL import Image
+import os
 
+#allows the user to choose the path to download
+def getPath():
+    global dir
+    dir = filedialog.askdirectory()
+    if dir:
+        pathLabel.configure(text=dir)
 
 def convertMP4():
     try:
         ytLink = link.get()
         ytObject = YouTube(ytLink)
         video = ytObject.streams.get_highest_resolution()
-        video.download()
+        video.download(dir)
         titleLabel.configure(text=ytObject.title)
         finishLabel.configure(text="Downloaded", text_color="green")
     except:
@@ -20,7 +28,7 @@ def convertMP3():
         ytLink = link.get()
         ytObject = YouTube(ytLink)
         mp3 = ytObject.streams.get_audio_only()
-        mp3.download()
+        mp3.download(dir)
         titleLabel.configure(text=ytObject.title)
         finishLabel.configure(text="Downloaded", text_color="green")
     except:
@@ -57,15 +65,22 @@ finishLabel = customtkinter.CTkLabel(app, text="")
 finishLabel.pack()
 
 #Download mp4 Button
-download = customtkinter.CTkButton(app, text="Download MP4", command=convertMP4)
-download.pack(pady=10)
+download4 = customtkinter.CTkButton(app, text="Download MP4", command=convertMP4)
+download4.place(x=60, y=100)
 #Download mp3 Button
-download = customtkinter.CTkButton(app, text="Download MP3", command=convertMP3)
-download.pack(pady=10)
+download3 = customtkinter.CTkButton(app, text="Download MP3", command=convertMP3)
+download3.place(x=300, y=100)
 
 titleLabel = customtkinter.CTkLabel(app, text="")
 titleLabel.pack(pady=10)
 
+dir = os.getcwd()
+
+pathButton = customtkinter.CTkButton(app, text="Change Path", command=getPath)
+pathButton.pack()
+
+pathLabel = customtkinter.CTkLabel(app, text=dir)
+pathLabel.pack()
 
 
 
